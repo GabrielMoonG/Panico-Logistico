@@ -25,9 +25,6 @@ public class SeletorDeObjetos : MonoBehaviour
 
                 movController.ObjSelect = clicado; // Define o objeto selecionado no controlador de movimentação
 
-                // Exemplo: Mudar a cor para confirmar a seleção
-                clicado.GetComponent<Renderer>().material.color = Color.yellow;
-
                 // Aqui você pode pegar a altura (Y) para mover a "carreira"
                 float alturaY = Mathf.Round(clicado.transform.position.y);
                 Debug.Log("Vou mover a carreira na altura: " + alturaY);

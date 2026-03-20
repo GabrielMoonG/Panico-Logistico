@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem; // Adicione isso no topo
 
@@ -8,6 +9,7 @@ public class MovimentacaoController : MonoBehaviour
     public PlayerInput playerInput;
     private InputAction moveAction;
 
+    public Guid? IDSelecionado = null;
     public GameObject ObjSelect;
 
     public GridConfig gridConfig; // Referência ao script de configuração do grid
@@ -20,6 +22,12 @@ public class MovimentacaoController : MonoBehaviour
 
     void Update()
     {
+        //Atualiza o ID selecionado com base no objeto selecionado
+        if (ObjSelect != null)
+        {
+            IDSelecionado = ObjSelect.GetComponent<CaixaConfig>()?.IDCaixa; // Atualiza o ID selecionado
+        }
+
         // Detecta quando o jogador aperta a tecla (triggered)
         if (ObjSelect != null && moveAction.triggered)
         {
@@ -57,10 +65,9 @@ public class MovimentacaoController : MonoBehaviour
             var objeto = hit.transform.gameObject;
 
             // Exemplo: Mudar a cor para confirmar a seleção
-            objeto.GetComponent<Renderer>().material.color = Color.green;
 
-            // 2. Se bateu tenta movimentar o vinhoho primeiro
-            var moveu = Mover(objeto, direcao); // Use o nome do SEU script
+            // 2. Se bateu tenta movimentar o vinho primeiro
+            var moveu = Mover(objeto, direcao); 
 
             //se o vizinho se moveu, eu me movo
             if (moveu)
@@ -81,4 +88,5 @@ public class MovimentacaoController : MonoBehaviour
 
         return true;
     }
+
 }

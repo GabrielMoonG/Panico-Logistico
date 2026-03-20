@@ -127,3 +127,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CaixaConfig
   velocidadeQueda: 5
   alturaDoChao: 0
+  CoresDisponiveis:
+  - {r: 0.14117648, g: 0.5764706, b: 0.18431373, a: 1}
+  - {r: 0.73333335, g: 0.18431373, b: 0.19215688, a: 1}
+  - {r: 0.14901961, g: 0.38431376, b: 0.6313726, a: 1}
+  - {r: 0.8352942, g: 0.5568628, b: 0.019607844, a: 1}
+  CorAtual: {r: 0.5, g: 0.5, b: 0.5, a: 1}
