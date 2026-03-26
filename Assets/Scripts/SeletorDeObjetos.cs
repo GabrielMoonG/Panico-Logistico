@@ -21,13 +21,10 @@ public class SeletorDeObjetos : MonoBehaviour
                 // 'hit.transform' é o objeto que você clicou!
                 GameObject clicado = hit.transform.gameObject;
 
-                Debug.Log("Cliquei em: " + clicado.name);
-
                 movController.ObjSelect = clicado; // Define o objeto selecionado no controlador de movimentação
 
                 // Aqui você pode pegar a altura (Y) para mover a "carreira"
                 float alturaY = Mathf.Round(clicado.transform.position.y);
-                Debug.Log("Vou mover a carreira na altura: " + alturaY);
             }
         }
     }

@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 7227746546716409047}
   - component: {fileID: 3350832317999955669}
   - component: {fileID: 8429058935689491197}
+  - component: {fileID: 4849036423106177896}
   m_Layer: 0
   m_Name: CaixaDefault
-  m_TagString: Untagged
+  m_TagString: Caixa
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,3 +134,35 @@ MonoBehaviour:
   - {r: 0.14901961, g: 0.38431376, b: 0.6313726, a: 1}
   - {r: 0.8352942, g: 0.5568628, b: 0.019607844, a: 1}
   CorAtual: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  movControl: {fileID: 0}
+  intensidadeBrilho: 1
+  GrupoConectado: []
+  AtivarConectadosRaycast: 0
+  RigAtivado: 0
+--- !u!54 &4849036423106177896
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3896815958217677632}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0

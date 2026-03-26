@@ -17,12 +17,14 @@ public class CaixaConfig : MonoBehaviour
     private Renderer rend;
 
     public MovimentacaoController movControl;
+    public GridConfig gridConfig;
 
     public float intensidadeBrilho = 1f; // Intensidade do brilho quando selecionada
 
     public List<CaixaConfig> GrupoConectado; // Lista de caixas conectadas da mesma cor
 
     public bool AtivarConectadosRaycast = false; // se verdadeiro exibe os raios para debug
+    public bool RigAtivado = false; // se verdadeiro, a caixa não cai mesmo sem suporte
 
 
     void Start()
@@ -37,10 +39,26 @@ public class CaixaConfig : MonoBehaviour
         IDCaixa = Guid.NewGuid();
 
         movControl = FindFirstObjectByType<MovimentacaoController>();
+        gridConfig = FindFirstObjectByType<GridConfig>();
     }
 
     void Update()
     {
+
+        RigAtivado = !DentroDoGrid();
+        if (RigAtivado)
+        {
+            var rigid = GetComponent<Rigidbody>();
+            rigid.useGravity = true;
+            rigid.isKinematic = false; // Garanta que não está kinematic
+            rigid.freezeRotation = false;
+
+            // Importante: desativar o script para o Update parar de rodar
+            this.enabled = false;
+            Brilho(false);
+            return;
+        }
+
         ObterGrupoConectado();
 
         if (GrupoConectado.Find(o => o.IDCaixa == movControl.IDSelecionado)) //se o selecionado tiver na lista ativa o brilho
@@ -66,6 +84,7 @@ public class CaixaConfig : MonoBehaviour
             return;
         }
 
+
         // 3. Se não tem nada embaixo e não chegou no chão, cai de forma fluida
         CairFluido();
     }
@@ -80,6 +99,11 @@ public class CaixaConfig : MonoBehaviour
         if (Physics.Raycast(origem, Vector3.down, out hit, 0.45f))
         {
             // Opcional: verifique se o que atingiu tem a Tag "Cubo"
+            if (hit.transform.CompareTag("Caixa"))
+            {
+
+            }
+
             return true;
         }
         return false;
@@ -149,7 +173,6 @@ public class CaixaConfig : MonoBehaviour
                     if (AtivarConectadosRaycast)
                         Debug.DrawRay(transform.position, dir * 1.1f, Color.green, 0.1f);
 
-
                     if (!grupoJaEncontrado.Contains(vizinho))
                     {
                         // RECURSÃO: O vizinho se encarrega de continuar a cascata
@@ -166,5 +189,23 @@ public class CaixaConfig : MonoBehaviour
 
         // 5. No final de tudo, todos os objetos do grupo apontam para a mesma lista
         this.GrupoConectado = grupoJaEncontrado;
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        //por enquando so destroi
+        Destroy(gameObject);
+    }
+
+    public bool DentroDoGrid()
+    {
+        // 1. Verificação de Limites Normais
+        bool dentroDoX = transform.position.x <= (gridConfig.gridXSize - 1) && transform.position.x >= (-gridConfig.gridXSize);
+
+        bool dentroDoZ = transform.position.z <= (gridConfig.gridZSize - 1) && transform.position.z >= (-gridConfig.gridZSize);
+
+        if (dentroDoX && dentroDoZ) return true;
+
+        return false;
     }
 }

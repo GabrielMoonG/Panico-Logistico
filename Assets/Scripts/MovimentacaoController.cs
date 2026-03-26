@@ -33,25 +33,56 @@ public class MovimentacaoController : MonoBehaviour
         {
             Vector2 input = moveAction.ReadValue<Vector2>();
 
-            if (input.x > 0) Mover(ObjSelect, Vector3.right);  // Seta Direita ou D
-            if (input.x < 0) Mover(ObjSelect, Vector3.left);   // Seta Esquerda ou A
-            if (input.y < 0) Mover(ObjSelect, Vector3.back);   // Seta Baixo ou S
-            if (input.y > 0) Mover(ObjSelect, Vector3.forward);// Seta Cima ou W
+            //if (input.x > 0) Mover(ObjSelect, Vector3.right);  // Seta Direita ou D
+            //if (input.x < 0) Mover(ObjSelect, Vector3.left);   // Seta Esquerda ou A
+            //if (input.y < 0) Mover(ObjSelect, Vector3.back);   // Seta Baixo ou S
+            //if (input.y > 0) Mover(ObjSelect, Vector3.forward);// Seta Cima ou W
+            if (input.x > 0) TentarMoverConjunto(Vector3.right);  // Seta Direita ou D
+            if (input.x < 0) TentarMoverConjunto(Vector3.left);   // Seta Esquerda ou A
+            if (input.y < 0) TentarMoverConjunto(Vector3.back);   // Seta Baixo ou S
+            if (input.y > 0) TentarMoverConjunto(Vector3.forward);// Seta Cima ou W
+        }
+    }
+
+    void TentarMoverConjunto(Vector3 direcao)
+    {
+        // 1. Obter o grupo conectado
+        var conectados = ObjSelect.GetComponent<CaixaConfig>().GrupoConectado;
+
+        foreach (var item in conectados)
+        {
+            Mover(item.gameObject, direcao);
         }
     }
 
     bool PodeSeMover(GameObject caixa, Vector3 direcao)
     {
-        switch (true)
+        // 1. Verificação de Limites Normais
+        bool dentroDoX = (direcao == Vector3.right && caixa.transform.position.x < gridConfig.gridXSize - 1) ||
+                         (direcao == Vector3.left && caixa.transform.position.x > -gridConfig.gridXSize);
+
+        bool dentroDoZ = (direcao == Vector3.forward && caixa.transform.position.z < gridConfig.gridZSize - 1) ||
+                         (direcao == Vector3.back && caixa.transform.position.z > -gridConfig.gridZSize);
+
+        if (dentroDoX || dentroDoZ) return true;
+
+        // 2. Lógica de Queda (Se tentou mover para fora do grid)
+        var config = caixa.GetComponent<CaixaConfig>();
+        if (config != null)
         {
-            case true when Vector3.right == direcao && caixa.transform.position.x < gridConfig.gridXSize - 1:
-            case true when Vector3.left == direcao && caixa.transform.position.x > -gridConfig.gridXSize:
-            case true when Vector3.forward == direcao && caixa.transform.position.z < gridConfig.gridZSize - 1:
-            case true when Vector3.back == direcao && caixa.transform.position.z > -gridConfig.gridZSize:
-                return true;
+            config.RigAtivado = true; // Ativa a física real
+
+            // Se era a caixa selecionada, limpamos a seleção para não dar erro
+            if (caixa == ObjSelect)
+            {
+                ObjSelect = null;
+                IDSelecionado = null;
+            }
+
+            caixa.transform.position += direcao;
         }
 
-        return false;
+        return false; // Retornamos false para impedir o movimento manual de "teletransporte"
     }
 
     bool Mover(GameObject caixa,  Vector3 direcao)
