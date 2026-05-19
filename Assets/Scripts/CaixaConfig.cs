@@ -44,7 +44,6 @@ public class CaixaConfig : MonoBehaviour
 
     void Update()
     {
-
         RigAtivado = !DentroDoGrid();
         if (RigAtivado)
         {
@@ -58,8 +57,6 @@ public class CaixaConfig : MonoBehaviour
             Brilho(false);
             return;
         }
-
-        ObterGrupoConectado();
 
         if (GrupoConectado.Find(o => o.IDCaixa == movControl.IDSelecionado)) //se o selecionado tiver na lista ativa o brilho
         {
@@ -199,13 +196,39 @@ public class CaixaConfig : MonoBehaviour
 
     public bool DentroDoGrid()
     {
-        // 1. Verificação de Limites Normais
-        bool dentroDoX = transform.position.x <= (gridConfig.gridXSize - 1) && transform.position.x >= (-gridConfig.gridXSize);
+        var rangeLimite = 0.3f;
 
-        bool dentroDoZ = transform.position.z <= (gridConfig.gridZSize - 1) && transform.position.z >= (-gridConfig.gridZSize);
+        // 1. Verificação de Limites Normais
+        bool dentroDoX = Mathf.Round(transform.position.x) <= Mathf.Round((gridConfig.gridXSize - 1)) &&
+                         Mathf.Round(transform.position.x) >= Mathf.Round((-gridConfig.gridXSize));
+
+        bool dentroDoZ = Mathf.Round(transform.position.z) <= Mathf.Round((gridConfig.gridZSize - 1)) &&
+                         Mathf.Round(transform.position.z) >= Mathf.Round((-gridConfig.gridZSize));
 
         if (dentroDoX && dentroDoZ) return true;
 
         return false;
+    }
+
+    public void Mover(Vector3 direcao)
+    {
+        ObterGrupoConectado();
+
+        //Aqui movemos o grupo conectado porem temos q mover os que nao sao da mesma cor tmb empurrar
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, direcao, out hit, 1f))
+        {
+            var caixaEncontrada = hit.transform.GetComponent<CaixaConfig>();
+            if (!GrupoConectado.Contains(caixaEncontrada))
+            {
+                caixaEncontrada.Mover(direcao);
+            }
+        }
+
+        foreach (var item in GrupoConectado)
+        {
+            item.transform.position += direcao;
+        }
     }
 }
